@@ -1,10 +1,12 @@
 ---
 - name: Deploy Node.js Application
   hosts: all
-  become: yes
+  become: yes  # Run all tasks with sudo
+  tasks:
+    - include_role:
+        name: server-setup
+
+    - include_role:
+        name: app
   vars:
     git_tag: "{{ git_tag }}"
-
-  roles:
-    - server-setup
-    - app

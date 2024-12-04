@@ -15,12 +15,15 @@
   command: pm2 start /home/ubuntu/node-app/app.js --name "node-app"
   args:
     chdir: /home/ubuntu/node-app
+  become: yes
 
 - name: Enable PM2 to start on boot
   command: pm2 startup
   register: pm2_startup
   ignore_errors: yes
+  become: yes
 
 - name: Save PM2 process list
   command: pm2 save
   when: pm2_startup.rc == 0
+  become: yes
