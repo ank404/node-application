@@ -1,0 +1,32 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install curl and git
+  apt:
+    name:
+      - curl
+      - git
+    state: present
+
+- name: Install Node.js (v18)
+  shell: |
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+    apt-get install -y nodejs
+  args:
+    creates: /usr/bin/node
+
+- name: Install PM2 globally
+  npm:
+    name: pm2
+    global: yes
+
+- name: Ensure PM2 starts on boot
+  command: pm2 startup
+  register: pm2_startup
+  ignore_errors: yes
+
+- name: Save PM2 process list
+  command: pm2 save
+  when: pm2_startup.rc == 0

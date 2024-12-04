@@ -1,0 +1,28 @@
+name: Deploy Node.js App
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger deployment for any tag, e.g., v1.0.0
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Install Ansible
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ansible
+
+      - name: Run Ansible Playbook for Deployment
+        run: |
+          ansible-playbook -i inventory.ini node_service.yml -e "git_tag=${GITHUB_REF#refs/tags/}"

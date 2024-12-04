@@ -1,0 +1,10 @@
+---
+- name: Deploy Node.js Application
+  hosts: web
+  become: yes
+  vars:
+    git_tag: "{{ git_tag }}"
+
+  roles:
+    - server-setup
+    - app

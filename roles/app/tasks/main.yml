@@ -1,0 +1,26 @@
+---
+- name: Clone the GitHub repository
+  git:
+    repo: 'https://github.com/ank404/node-application.git'
+    dest: /home/ubuntu/node-app
+    version: "{{ git_tag }}"
+    force: yes
+
+- name: Install Node.js dependencies
+  npm:
+    path: /home/ubuntu/node-app
+    state: present
+
+- name: Start Node.js application with PM2
+  command: pm2 start /home/ubuntu/node-app/app.js --name "node-app"
+  args:
+    chdir: /home/ubuntu/node-app
+
+- name: Enable PM2 to start on boot
+  command: pm2 startup
+  register: pm2_startup
+  ignore_errors: yes
+
+- name: Save PM2 process list
+  command: pm2 save
+  when: pm2_startup.rc == 0
