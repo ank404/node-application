@@ -1,6 +1,6 @@
 ---
 - name: Deploy Node.js Application
-  hosts: web
+  hosts: all
   become: yes
   vars:
     git_tag: "{{ git_tag }}"
